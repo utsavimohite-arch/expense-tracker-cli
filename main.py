@@ -3,12 +3,13 @@
 # Internship Organization: CodeOrbit Tech
 
 from expense_manager import add_expense
+from csv_handler import load_expenses, save_expenses
 
 
 def main():
 
-    # Stores expenses temporarily in a list
-    expenses = []
+    # Load previously saved expenses
+    expenses = load_expenses()
 
     while True:
 
@@ -25,8 +26,11 @@ def main():
 
         if choice == "1":
 
-            # Call the add expense function
+            # Add a new expense
             add_expense(expenses)
+
+            # Save updated expenses into CSV
+            save_expenses(expenses)
 
         elif choice == "2":
 
