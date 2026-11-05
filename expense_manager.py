@@ -1,145 +1,114 @@
 
-# Expense Manager
-# Handles all expense-related operations.
-# Project: Expense Tracker Application
-# Organization: CodeOrbit Tech
-
 from datetime import date
 
 
 def add_expense(expenses):
-    """
-    Takes expense details from the user
-    and adds a new expense to the list.
-    """
+    print("\n===== ADD EXPENSE =====")
 
-    print("\n========== ADD NEW EXPENSE ==========")
+    category = input("Enter category (e.g., Food, Travel): ").strip()
 
-    # Generate a unique expense ID
-    if expenses:
-        expense_id = max(expense["ID"] for expense in expenses) + 1
-    else:
-        expense_id = 1
+    if not category:
+        print("Category cannot be empty!")
+        return
 
-    # Get today's date automatically
-    expense_date = date.today().strftime("%Y-%m-%d")
+    description = input("Enter description: ").strip()
 
-    # Get category
-    while True:
-        category = input("Enter category: ").strip()
+    if not description:
+        print("Description cannot be empty!")
+        return
 
-        if category:
-            break
+    try:
+        amount = float(input("Enter amount: "))
 
-        print("Category cannot be empty.")
+        if amount <= 0:
+            print("Amount must be greater than zero!")
+            return
 
-    # Get description
-    while True:
-        description = input("Enter description: ").strip()
+    except ValueError:
+        print("Please enter a valid numeric amount!")
+        return
 
-        if description:
-            break
+    expense_id = max(
+        (expense["ID"] for expense in expenses),
+        default=0
+    ) + 1
 
-        print("Description cannot be empty.")
-
-    # Get and validate amount
-    while True:
-        try:
-            amount = float(input("Enter amount: "))
-
-            if amount > 0:
-                break
-
-            print("Amount must be greater than zero.")
-
-        except ValueError:
-            print("Please enter a valid numeric amount.")
-
-    # Create expense record
     expense = {
         "ID": expense_id,
-        "Date": expense_date,
+        "Date": date.today().strftime("%Y-%m-%d"),
         "Category": category,
         "Description": description,
         "Amount": amount
     }
 
-    # Add expense to the list
     expenses.append(expense)
 
     print("\nExpense added successfully!")
-    print(f"Expense ID: {expense_id}")
 
 
 def view_expenses(expenses):
-    """
-    Displays all recorded expenses.
-    """
-
-    print("\n========== ALL EXPENSES ==========")
+    print("\n===== ALL EXPENSES =====")
 
     if not expenses:
-        print("No expenses recorded yet.")
+        print("No expenses found!")
         return
 
-    print("-" * 85)
-
-    print(
-        f"{'ID':<5}"
-        f"{'Date':<15}"
-        f"{'Category':<15}"
-        f"{'Description':<25}"
-        f"{'Amount':>12}"
-    )
-
-    print("-" * 85)
+    print("-" * 75)
+    print(f"{'ID':<5}{'Date':<15}{'Category':<15}{'Description':<20}{'Amount':>12}")
+    print("-" * 75)
 
     for expense in expenses:
         print(
             f"{expense['ID']:<5}"
             f"{expense['Date']:<15}"
             f"{expense['Category']:<15}"
-            f"{expense['Description']:<25}"
+            f"{expense['Description']:<20}"
             f"{expense['Amount']:>12.2f}"
         )
 
-    print("-" * 85)
+    print("-" * 75)
 
 
 def search_expenses(expenses):
-    """
-    Searches expenses using their category.
-    """
+    print("\n===== SEARCH EXPENSES =====")
 
-    print("\n========== SEARCH EXPENSES ==========")
+    category = input("Enter category to search: ").strip()
+
+    if not category:
+        print("Please enter a category!")
+        return
+
+    results = [
+        expense for expense in expenses
+        if expense["Category"].lower() == category.lower()
+    ]
+
+    if not results:
+        print("No expenses found in this category!")
+        return
+
+    print(f"\nExpenses in category: {category}")
+    print("-" * 75)
+
+    for expense in results:
+        print(
+            f"ID: {expense['ID']} | "
+            f"Date: {expense['Date']} | "
+            f"Description: {expense['Description']} | "
+            f"Amount: {expense['Amount']:.2f}"
+        )
+
+    print("-" * 75)
+
+
+def calculate_total_expenses(expenses):
+    print("\n===== TOTAL EXPENSES =====")
 
     if not expenses:
-        print("No expenses available to search.")
+        print("No expenses recorded yet!")
         return
 
-    search_category = input("Enter category to search: ").strip()
+    total = sum(expense["Amount"] for expense in expenses)
 
-    if not search_category:
-        print("Category cannot be empty.")
-        return
-
-    found_expenses = []
-
-    for expense in expenses:
-        if expense["Category"].lower() == search_category.lower():
-            found_expenses.append(expense)
-
-    if found_expenses:
-
-        print("\nMatching Expenses:")
-
-        for expense in found_expenses:
-            print("-" * 40)
-            print(f"ID: {expense['ID']}")
-            print(f"Date: {expense['Date']}")
-            print(f"Category: {expense['Category']}")
-            print(f"Description: {expense['Description']}")
-            print(f"Amount: Rs. {expense['Amount']:.2f}")
-
-    else:
-        print("No expenses found in this category.")
+    print(f"Total number of expenses: {len(expenses)}")
+    print(f"Total amount spent: {total:.2f}")
