@@ -1,48 +1,37 @@
-# Expense Tracker Application
-# Developed using Python
-# Internship Organization: CodeOrbit Tech
 
-from expense_manager import add_expense
+from expense_manager import add_expense, view_expenses, search_expenses
 from csv_handler import load_expenses, save_expenses
 
 
 def main():
-
-    # Load previously saved expenses
     expenses = load_expenses()
 
     while True:
-
-        print("\n========================================")
-        print("           EXPENSE TRACKER")
-        print("========================================")
-
+        print("\n===== EXPENSE TRACKER =====")
         print("1. Add Expense")
-        print("2. Exit")
+        print("2. View All Expenses")
+        print("3. Search Expenses by Category")
+        print("4. Exit")
 
-        print("========================================")
-
-        choice = input("Enter your choice (1-2): ")
+        choice = input("\nEnter your choice (1-4): ")
 
         if choice == "1":
-
-            # Add a new expense
             add_expense(expenses)
-
-            # Save updated expenses into CSV
             save_expenses(expenses)
 
         elif choice == "2":
+            view_expenses(expenses)
 
-            print("\nThank you for using Expense Tracker!")
-            print("Exiting application...")
+        elif choice == "3":
+            search_expenses(expenses)
+
+        elif choice == "4":
+            print("Thank you for using Expense Tracker!")
             break
 
         else:
+            print("Invalid choice! Please enter a number between 1 and 4.")
 
-            print("\nInvalid choice! Please select 1 or 2.")
 
-
-# Start the application
 if __name__ == "__main__":
     main()
