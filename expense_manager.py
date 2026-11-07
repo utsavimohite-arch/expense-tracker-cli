@@ -142,3 +142,42 @@ def category_wise_summary(expenses):
     print(f"{'Grand Total':<25}: Rs. {grand_total:.2f}")
 
     print("-" * 45)
+
+
+def delete_expense(expenses):
+    print("\n===== DELETE EXPENSE =====")
+
+    if not expenses:
+        print("No expenses available to delete!")
+        return False
+
+    view_expenses(expenses)
+
+    try:
+        expense_id = int(input("\nEnter the Expense ID to delete: "))
+
+    except ValueError:
+        print("Please enter a valid numeric ID!")
+        return False
+
+    for expense in expenses:
+        if expense["ID"] == expense_id:
+            print("\nExpense found:")
+            print(f"Category: {expense['Category']}")
+            print(f"Description: {expense['Description']}")
+            print(f"Amount: {expense['Amount']:.2f}")
+
+            confirmation = input(
+                "\nAre you sure you want to delete this expense? (yes/no): "
+            ).strip().lower()
+
+            if confirmation == "yes":
+                expenses.remove(expense)
+                print("\nExpense deleted successfully!")
+                return True
+
+            print("\nDeletion cancelled.")
+            return False
+
+    print("\nNo expense found with that ID!")
+    return False

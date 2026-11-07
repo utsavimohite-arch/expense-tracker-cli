@@ -4,7 +4,8 @@ from expense_manager import (
     view_expenses,
     search_expenses,
     calculate_total_expenses,
-    category_wise_summary
+    category_wise_summary,
+    delete_expense
 )
 
 from csv_handler import load_expenses, save_expenses
@@ -20,9 +21,10 @@ def main():
         print("3. Search Expenses by Category")
         print("4. Calculate Total Expenses")
         print("5. Category-wise Expense Summary")
-        print("6. Exit")
+        print("6. Delete an Expense")
+        print("7. Exit")
 
-        choice = input("\nEnter your choice (1-6): ")
+        choice = input("\nEnter your choice (1-7): ")
 
         if choice == "1":
             add_expense(expenses)
@@ -41,11 +43,17 @@ def main():
             category_wise_summary(expenses)
 
         elif choice == "6":
+            deleted = delete_expense(expenses)
+
+            if deleted:
+                save_expenses(expenses)
+
+        elif choice == "7":
             print("Thank you for using Expense Tracker!")
             break
 
         else:
-            print("Invalid choice! Please enter a number between 1 and 6.")
+            print("Invalid choice! Please enter a number between 1 and 7.")
 
 
 if __name__ == "__main__":
