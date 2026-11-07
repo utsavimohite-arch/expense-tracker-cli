@@ -42,7 +42,6 @@ def add_expense(expenses):
     }
 
     expenses.append(expense)
-
     print("\nExpense added successfully!")
 
 
@@ -112,3 +111,34 @@ def calculate_total_expenses(expenses):
 
     print(f"Total number of expenses: {len(expenses)}")
     print(f"Total amount spent: {total:.2f}")
+
+
+def category_wise_summary(expenses):
+    print("\n===== CATEGORY-WISE EXPENSE SUMMARY =====")
+
+    if not expenses:
+        print("No expenses recorded yet!")
+        return
+
+    category_totals = {}
+
+    for expense in expenses:
+        category = expense["Category"].strip().title()
+        amount = float(expense["Amount"])
+
+        if category in category_totals:
+            category_totals[category] += amount
+        else:
+            category_totals[category] = amount
+
+    print("-" * 45)
+
+    for category, total in sorted(category_totals.items()):
+        print(f"{category:<25}: Rs. {total:.2f}")
+
+    print("-" * 45)
+
+    grand_total = sum(category_totals.values())
+    print(f"{'Grand Total':<25}: Rs. {grand_total:.2f}")
+
+    print("-" * 45)
