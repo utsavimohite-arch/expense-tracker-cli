@@ -1,5 +1,6 @@
 
 from datetime import date
+import math
 
 
 def add_expense(expenses):
@@ -8,24 +9,28 @@ def add_expense(expenses):
     category = input("Enter category (e.g., Food, Travel): ").strip()
 
     if not category:
-        print("Category cannot be empty!")
+        print("Error: Category cannot be empty!")
         return
 
     description = input("Enter description: ").strip()
 
     if not description:
-        print("Description cannot be empty!")
+        print("Error: Description cannot be empty!")
         return
 
     try:
         amount = float(input("Enter amount: "))
 
+        if not math.isfinite(amount):
+            print("Error: Please enter a finite amount!")
+            return
+
         if amount <= 0:
-            print("Amount must be greater than zero!")
+            print("Error: Amount must be greater than zero!")
             return
 
     except ValueError:
-        print("Please enter a valid numeric amount!")
+        print("Error: Please enter a valid numeric amount!")
         return
 
     expense_id = max(
@@ -53,7 +58,10 @@ def view_expenses(expenses):
         return
 
     print("-" * 75)
-    print(f"{'ID':<5}{'Date':<15}{'Category':<15}{'Description':<20}{'Amount':>12}")
+    print(
+        f"{'ID':<5}{'Date':<15}{'Category':<15}"
+        f"{'Description':<20}{'Amount':>12}"
+    )
     print("-" * 75)
 
     for expense in expenses:
@@ -71,15 +79,19 @@ def view_expenses(expenses):
 def search_expenses(expenses):
     print("\n===== SEARCH EXPENSES =====")
 
+    if not expenses:
+        print("No expenses available to search!")
+        return
+
     category = input("Enter category to search: ").strip()
 
     if not category:
-        print("Please enter a category!")
+        print("Error: Please enter a category!")
         return
 
     results = [
         expense for expense in expenses
-        if expense["Category"].lower() == category.lower()
+        if expense["Category"].casefold() == category.casefold()
     ]
 
     if not results:
@@ -126,10 +138,9 @@ def category_wise_summary(expenses):
         category = expense["Category"].strip().title()
         amount = float(expense["Amount"])
 
-        if category in category_totals:
-            category_totals[category] += amount
-        else:
-            category_totals[category] = amount
+        category_totals[category] = (
+            category_totals.get(category, 0) + amount
+        )
 
     print("-" * 45)
 
@@ -139,8 +150,8 @@ def category_wise_summary(expenses):
     print("-" * 45)
 
     grand_total = sum(category_totals.values())
-    print(f"{'Grand Total':<25}: Rs. {grand_total:.2f}")
 
+    print(f"{'Grand Total':<25}: Rs. {grand_total:.2f}")
     print("-" * 45)
 
 
@@ -156,8 +167,12 @@ def delete_expense(expenses):
     try:
         expense_id = int(input("\nEnter the Expense ID to delete: "))
 
+        if expense_id <= 0:
+            print("Error: Expense ID must be positive!")
+            return False
+
     except ValueError:
-        print("Please enter a valid numeric ID!")
+        print("Error: Please enter a valid numeric ID!")
         return False
 
     for expense in expenses:
@@ -168,7 +183,8 @@ def delete_expense(expenses):
             print(f"Amount: {expense['Amount']:.2f}")
 
             confirmation = input(
-                "\nAre you sure you want to delete this expense? (yes/no): "
+                "\nAre you sure you want to delete this expense? "
+                "(yes/no): "
             ).strip().lower()
 
             if confirmation == "yes":
